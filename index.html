@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>LeadMap — пошук B2B-лідів</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Unbounded:wght@600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0e1116;--panel:#161b22;--panel2:#1d242d;--line:#2a333f;--tx:#e8edf3;--mut:#8b97a6;--ac:#3ddc97;--ac2:#5aa9ff;--warn:#ffb454;
+ box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:dark}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--tx);font:500 15px/1.5 Manrope,system-ui,sans-serif}
+.wrap{max-width:1180px;margin:0 auto;padding:20px 16px 60px}
+header{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:22px}
+.logo{font:600 22px Unbounded,Manrope,sans-serif;letter-spacing:-.5px}.logo i{color:var(--ac);font-style:normal}
+.sub{color:var(--mut);font-size:13px;max-width:420px}
+.stats{display:flex;gap:10px}.stat{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:8px 14px;min-width:84px}
+.stat b{display:block;font-size:20px;font-weight:800}.stat span{color:var(--mut);font-size:12px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:18px}
+.row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+@media(max-width:820px){.row{grid-template-columns:1fr 1fr}}@media(max-width:520px){.row{grid-template-columns:1fr}.stats{width:100%}.stat{flex:1}}
+label{display:block;color:var(--mut);font-size:12px;margin-bottom:5px}
+input,select{width:100%;background:var(--panel2);color:var(--tx);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font:inherit;outline:none}
+input:focus,select:focus,button:focus-visible,a:focus-visible{outline:2px solid var(--ac2);outline-offset:1px}
+.addc{display:flex;gap:6px}.addc button{white-space:nowrap}
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px}
+.chip{background:var(--panel2);border:1px solid var(--line);color:var(--mut);border-radius:99px;padding:6px 12px;font:inherit;font-size:13px;cursor:pointer}
+.chip.on{background:rgba(61,220,151,.14);border-color:var(--ac);color:var(--ac)}
+.bar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.btns{display:flex;gap:8px;flex-wrap:wrap}
+.btn{background:var(--panel2);border:1px solid var(--line);color:var(--tx);border-radius:10px;padding:9px 14px;font:inherit;font-weight:700;font-size:14px;cursor:pointer}
+.btn:hover{border-color:var(--ac2)}.btn.pri{background:var(--ac);border-color:var(--ac);color:#06281a}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:14px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:11px}
+.card.sel{border-color:var(--ac)}
+.top{display:flex;gap:11px;align-items:flex-start}
+.av{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-weight:800;font-size:17px;color:#06281a;flex:none}
+.top h3{margin:0;font-size:16px;line-height:1.25}.loc{color:var(--mut);font-size:13px}
+.top input{width:18px;height:18px;margin-left:auto;accent-color:var(--ac);flex:none}
+.cat{align-self:flex-start;background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:2px 9px;font-size:12px;color:var(--ac2)}
+.soc{display:flex;flex-wrap:wrap;gap:6px}
+.soc a{text-decoration:none;color:var(--tx);background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:4px 10px;font-size:12px;font-weight:700}
+.soc a:hover{border-color:var(--ac)}.soc .off{opacity:.3;border-style:dashed;padding:4px 10px;font-size:12px;border:1px dashed var(--line);border-radius:8px}
+.ct{font-size:13.5px;display:grid;gap:2px}.ct a{color:var(--tx);text-decoration:none;word-break:break-all}.ct a:hover{color:var(--ac)}
+.st{margin-top:auto;border-radius:10px;border:1px solid;padding:8px;font:inherit;font-weight:700;font-size:13px;cursor:pointer;background:transparent}
+.s0{color:var(--ac2);border-color:var(--ac2)}.s1{color:var(--warn);border-color:var(--warn)}.s2{color:var(--ac);border-color:var(--ac)}
+.sbtn{background:transparent;border:1px dashed var(--ac2);color:var(--ac2);border-radius:10px;padding:8px;font:inherit;font-weight:700;font-size:13px;cursor:pointer}.sbtn:hover,.sbtn.on{background:rgba(90,169,255,.1)}
+.script{display:grid;gap:8px}.script pre{white-space:pre-wrap;word-break:break-word;margin:0;font:inherit;font-size:13px;line-height:1.55;background:var(--panel2);border:1px solid var(--line);border-left:3px solid var(--ac);border-radius:10px;padding:11px}.script .btns .btn{padding:7px 11px;font-size:13px}
+.spin{width:34px;height:34px;border:3px solid var(--line);border-top-color:var(--ac);border-radius:50%;margin:0 auto 12px;animation:sp .8s linear infinite}@keyframes sp{to{transform:rotate(360deg)}}
+.go{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:16px}.go select{width:auto}.big{padding:13px 28px;font-size:16px}
+.soc a.srch{border-style:solid;border-color:var(--ac2);color:var(--ac2);background:rgba(90,169,255,.08)}.soc a.srch:hover{background:rgba(90,169,255,.18)}
+.nm{font-size:13px}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:auto}.sg{background:transparent;border:1px solid var(--line);color:var(--mut);border-radius:9px;padding:8px 4px;font:inherit;font-size:12px;font-weight:700;cursor:pointer}
+.sg.on.s0{color:var(--ac2);border-color:var(--ac2);background:rgba(90,169,255,.12)}.sg.on.s1{color:var(--warn);border-color:var(--warn);background:rgba(255,180,84,.12)}.sg.on.s2{color:var(--ac);border-color:var(--ac);background:rgba(61,220,151,.12)}
+.empty{text-align:center;color:var(--mut);padding:50px 10px;grid-column:1/-1}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translate(-50%,30px);background:var(--ac);color:#06281a;font-weight:800;padding:10px 18px;border-radius:10px;opacity:0;transition:.25s;pointer-events:none}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.note{color:var(--mut);font-size:12px;margin-top:26px}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+ <div><div class="logo">Lead<i>Map</i></div><div class="sub">Пошук контактів малого та середнього бізнесу: Україна, Європа, США</div></div>
+ <div class="stats"><div class="stat"><b id="sTot">0</b><span>знайдено</span></div><div class="stat"><b id="sWork">0</b><span>в роботі</span></div><div class="stat"><b id="sSel">0</b><span>обрано</span></div></div>
+</header>
+
+<section class="panel">
+ <div class="row">
+  <div><label for="q">Фільтр знайдених за назвою</label><input id="q" type="search" placeholder="Наприклад: барбершоп"></div>
+  <div><label for="country">Країна</label><div class="addc"><select id="country"></select><button class="btn" id="addCountry" title="Додати країну">+</button></div></div>
+  <div><label for="city">Місто</label><input id="city" list="cities" placeholder="Усі міста або введіть своє"><datalist id="cities"></datalist></div>
+  <div><label for="stf">Статус</label><select id="stf"><option value="">Усі статуси</option></select></div>
+ </div>
+ <div class="chips" id="chips" aria-label="Ніші"></div>
+ <div class="go"><button class="btn pri big" id="go">Шукати ліди</button><button class="btn" id="up">Завантажити базу (CSV/JSON)</button><input type="file" id="file" accept=".csv,.json" hidden>
+  <select id="modeSel" aria-label="Джерело даних" title="Джерело даних"><option value="targets">Режим: генератор запитів (без мережі)</option><option value="overpass">Режим: OpenStreetMap (потрібна мережа)</option><option value="mock">Джерело: демо (вигадані дані)</option><option value="google">Джерело: Google Places (ключ)</option></select></div>
+</section>
+
+<div class="bar">
+ <div class="btns">
+  <button class="btn" id="selAll">Обрати всі</button>
+  <button class="btn" id="copy">Скопіювати контакти</button>
+  <button class="btn pri" id="csv">Експорт ВСІХ знайдених (CSV/Excel)</button>
+ </div>
+ <span class="loc" id="hint"></span>
+</div>
+
+<main class="grid" id="grid"></main>
+<p class="note">У режимі генератора картки — це готові пошукові запити по місту та ніші: відкрийте посилання, знайдіть реальний заклад і впишіть його назву в картку, вона підставиться у скрипт. Росія виключена зі списку країн і з завантажених баз. Під час реального збору контактів дотримуйтесь GDPR та місцевого законодавства про захист персональних даних і спам.</p>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============ 1. ДОВІДНИКИ ============ */
+const COUNTRIES = {
+  UA:{n:"Україна",c:["Київ","Харків","Львів","Дніпро","Одеса","Запоріжжя"]},
+  PL:{n:"Польща",c:["Варшава","Краків","Вроцлав","Гданськ"]},
+  DE:{n:"Німеччина",c:["Берлін","Мюнхен","Гамбург","Кельн"]},
+  GB:{n:"Великобританія",c:["Лондон","Манчестер","Бірмінгем"]},
+  US:{n:"США",c:["Нью-Йорк","Лос-Анджелес","Маямі","Чикаго"]},
+  CZ:{n:"Чехія",c:["Прага","Брно","Острава"]},
+  ES:{n:"Іспанія",c:["Мадрид","Барселона","Валенсія"]}
+};
+const BLOCKED = ["RU","RUS","Росія","Россия","Russia"]; // Росію додати неможливо
+const NICHES = ["Салони краси","Барбершопи","Фітнес-клуби та тренери","Студії масажу та спа","Автосервіси та СТО","Детейлінг-центри","Приватні клініки та стоматології","Кав’ярні та ресторани","Дитячі центри та секції","Мовні школи та курси","Танцювальні студії","Інтернет-магазини одягу та косметики","Студії манікюру","Шоуруми","Меблеві майстерні","Будівельні та ремонтні бригади","IT-школи"];
+const STATUSES = ["Новий","В роботі","Відправлено пропозицію"];
+
+/* ============ 2. ДЕМО-ДАНІ ============
+   Формат: [назва, ніша, країна, місто, нік, прапорці мереж, телефон, email]
+   Прапорці: i=Instagram t=Telegram h=Threads f=Facebook w=Website */
+const RAW = [
+ ["Lumière Beauty Studio",0,"UA","Київ","lumiere.kyiv","itwf","+380 44 000 01 01","hello@lumiere-demo.ua"],
+ ["Bro&Co Barbershop",1,"UA","Харків","broco.kharkiv","ithw","+380 57 000 02 02","book@broco-demo.ua"],
+ ["Iron Pulse Fitness",2,"UA","Львів","ironpulse.lviv","ithfw","+380 32 000 03 03","club@ironpulse-demo.ua"],
+ ["Zen Garden Spa",3,"UA","Дніпро","zengarden.dp","ifw","+380 56 000 04 04","info@zengarden-demo.ua"],
+ ["АвтоМайстер Плюс",4,"UA","Одеса","automaster.odesa","tfw","+380 48 000 05 05","sto@automaster-demo.ua"],
+ ["Gloss Detailing Lab",5,"PL","Варшава","gloss.detailing","ihw","+48 22 000 06 06","studio@gloss-demo.pl"],
+ ["Klinika Uśmiech",6,"PL","Краків","klinika.usmiech","ifw","+48 12 000 07 07","rejestracja@usmiech-demo.pl"],
+ ["Röstwerk Café",7,"DE","Берлін","roestwerk.berlin","ihfw","+49 30 000 08 08","kontakt@roestwerk-demo.de"],
+ ["Little Explorers Club",8,"GB","Лондон","littleexplorers.ldn","ifw","+44 20 0000 0909","hello@littleexplorers-demo.co.uk"],
+ ["Lingua Nova Academy",9,"DE","Мюнхен","linguanova.muc","itfw","+49 89 000 10 10","kurse@linguanova-demo.de"],
+ ["Salsa Fuego Studio",10,"ES","Барселона","salsafuego.bcn","ihw","+34 93 000 11 11","info@salsafuego-demo.es"],
+ ["Velvet Thread Boutique",11,"US","Нью-Йорк","velvetthread.nyc","ihfw","+1 212 000 1212","shop@velvetthread-demo.com"],
+ ["Nail Atelier Praha",12,"CZ","Прага","nailatelier.praha","itw","+420 220 000 013","studio@nailatelier-demo.cz"],
+ ["Auto Prestige Showroom",13,"US","Маямі","autoprestige.mia","ifw","+1 305 000 1414","sales@autoprestige-demo.com"],
+ ["Дерево & Камінь",14,"UA","Київ","derevo.kamin","itfw","+380 44 000 15 15","zakaz@derevo-demo.ua"],
+ ["RenovaPro Crew",15,"GB","Манчестер","renovapro.mcr","hfw","+44 161 000 1616","quotes@renovapro-demo.co.uk"],
+ ["CodeKids Academy",16,"UA","Львів","codekids.lviv","itfhw","+380 32 000 17 17","learn@codekids-demo.ua"],
+ ["Casa Bella Peluquería",0,"ES","Мадрид","casabella.mad","ifw","+34 91 000 18 18","cita@casabella-demo.es"]
+];
+const DEMO = RAW.map((r,i)=>({id:i+1,name:r[0],niche:NICHES[r[1]],cc:r[2],city:r[3],h:r[4],f:r[5],phone:r[6],email:r[7],status:0}));
+let LEADS = []; // результати з'являються лише після пошуку або завантаження бази
+
+/* ============ 3. ПІДКЛЮЧЕННЯ РЕАЛЬНОГО API / БД ============
+   Замініть loadLeads() на запит до свого бекенду:
+
+   async function loadLeads(){
+     const p = new URLSearchParams({country:state.cc, city:state.city, niches:[...state.niches].join(","), q:state.q});
+     const res = await fetch("https://api.your-domain.com/v1/leads?"+p, {headers:{Authorization:"Bearer "+TOKEN}});
+     LEADS = await res.json();   // очікуваний формат: [{id,name,niche,cc,city,h,f,phone,email,status}]
+     render();
+   }
+   Джерела даних: Google Places API, Apollo.io / Hunter.io, OpenStreetMap Overpass, власна PostgreSQL.
+   Збереження статусу: PATCH /v1/leads/:id {status}, див. функцію setStatus() нижче.
+   Ключі API не зберігайте у фронтенді — тільки через ваш сервер. */
+
+/* ============ 4. СТАН ============ */
+const state={q:"",cc:"",city:"",st:"",niches:new Set(),sel:new Set(),open:new Set()};
+const $=id=>document.getElementById(id);
+const hues=["#3ddc97","#5aa9ff","#ffb454","#c792ea","#ff7a90","#4fd1d9"];
+try{const s=JSON.parse(localStorage.getItem("lm_status")||"{}");LEADS.forEach(l=>{if(s[l.id]!=null)l.status=s[l.id]})}catch(e){}
+
+/* ============ 5. ІНІЦІАЛІЗАЦІЯ ФІЛЬТРІВ ============ */
+function fillCountries(){
+ $("country").innerHTML='<option value="">Усі країни</option>'+Object.entries(COUNTRIES).map(([k,v])=>`<option value="${k}">${v.n}</option>`).join("");
+ $("country").value=state.cc;
+}
+function fillCities(){
+ const list=state.cc?COUNTRIES[state.cc].c:Object.values(COUNTRIES).flatMap(v=>v.c);
+ $("cities").innerHTML=list.map(c=>`<option value="${c}">`).join("");
+}
+$("chips").innerHTML=NICHES.map((n,i)=>`<button class="chip" data-n="${n}">${n}</button>`).join("");
+$("stf").innerHTML+=STATUSES.map((s,i)=>`<option value="${i}">${s}</option>`).join("");
+
+$("q").oninput=e=>{state.q=e.target.value.trim().toLowerCase();render()};
+$("country").onchange=e=>{state.cc=e.target.value;state.city="";$("city").value="";fillCities()};
+$("city").oninput=e=>{state.city=e.target.value.trim()};
+$("stf").onchange=e=>{state.st=e.target.value;render()};
+$("chips").onclick=e=>{const b=e.target.closest(".chip");if(!b)return;const n=b.dataset.n;state.niches.has(n)?state.niches.delete(n):state.niches.add(n);b.classList.toggle("on")};
+$("addCountry").onclick=()=>{
+ const name=(prompt("Назва країни (наприклад: Литва)")||"").trim();
+ if(!name)return;
+ if(BLOCKED.some(b=>b.toLowerCase()===name.toLowerCase())){toast("Цю країну додати не можна");return}
+ const code="X"+Object.keys(COUNTRIES).length;
+ COUNTRIES[code]={n:name,c:[]};fillCountries();$("country").value=code;state.cc=code;fillCities();
+};
+
+/* ============ 6. ФІЛЬТРАЦІЯ ТА РЕНДЕР ============ */
+function filtered(){
+ return LEADS.filter(l=>
+  (state.st===""||l.status==state.st)&&
+  (!state.q||(l.name+" "+l.niche).toLowerCase().includes(state.q)));
+}
+const links=l=>{const u=l.u||{},h=l.h||"";return{i:["Instagram",u.i||"https://instagram.com/"+h],t:["Telegram",u.t||"https://t.me/"+h.replace(/\./g,"_")],h:["Threads",u.h||"https://threads.net/@"+h],f:["Facebook",u.f||"https://facebook.com/"+h],w:["Website",u.w||"https://"+h.replace(/\./g,"")+"-demo.example"]}};
+/* ============ СКРИПТИ ПЕРШОГО КОНТАКТУ ============
+   Для кожної ніші: [UA: проблема, UA: що робить бот, EN: проблема, EN: що робить бот].
+   Лідам з України скрипт генерується українською, з інших країн — англійською.
+   Щоб додати мову чи нішу — розширте SCRIPTS або підключіть свій генератор (наприклад, запит до LLM-API). */
+const SCRIPTS=[
+["частина заявок губиться в директі, поки ніхто не встиг відповісти","самі записують на послугу, нагадують про візит і збирають номери клієнтів","some booking requests get lost in DMs before anyone replies","book appointments automatically, send reminders and collect client phone numbers"],
+["вечірні й вихідні записи губляться, поки майстри зайняті біля крісла","дають обрати барбера й час та самі підтверджують запис","evening and weekend bookings slip away while barbers are busy at the chair","let clients pick a barber and a time slot and confirm the booking on their own"],
+["ті, хто питає про пробне заняття чи абонемент, не дочекавшись відповіді йдуть до конкурентів","приймають заявку на пробне тренування, розповідають про абонементи й збирають номери","people asking about a trial session or membership often go to a competitor when nobody answers","take trial-session requests, explain memberships and collect phone numbers"],
+["клієнти, які вирішили записатися ввечері, не отримують відповіді до ранку","підбирають процедуру, фіксують слот і нагадують про сеанс","clients who decide to book in the evening get no reply until morning","suggest a treatment, reserve a slot and remind clients about the session"],
+["запити «скільки коштує діагностика?» лишаються без відповіді, поки майстри під авто","приймають заявку на ремонт, дають орієнтовну вартість і записують на вільний бокс","“how much is a diagnostic?” messages stay unanswered while mechanics are under cars","take repair requests, give a price estimate and book a free bay"],
+["запити на полірування чи кераміку губляться, бо спершу потрібні фото й марка авто","збирають фото та марку авто й одразу пропонують пакет послуг із часом","polishing and ceramic coating requests stall because you first need photos and the car model","collect photos and car details and instantly offer a package with a time slot"],
+["пацієнти, не дочекавшись адміністратора, записуються в іншу клініку","записують до потрібного лікаря й нагадують про візит, зменшуючи кількість неявок","patients who can’t reach the front desk book with another clinic","book visits with the right doctor and send reminders to cut no-shows"],
+["бронювання столиків у директі губляться в піковий час","приймають броні, показують меню й збирають контакти гостей для акцій","table requests in DMs get buried during the rush","take reservations, show the menu and collect guest contacts for promotions"],
+["батьки, які питають про розклад і пробне заняття, не завжди отримують швидку відповідь","показують розклад груп, записують дитину на пробне й збирають контакти батьків","parents asking about schedules and trial classes don’t always get a quick answer","show class schedules, book a trial class and collect parents’ contacts"],
+["заявки на пробний урок і визначення рівня лишаються без відповіді","проводять міні-тест рівня, записують на пробний урок і збирають номери","trial-lesson and level-check requests go unanswered","run a quick level test, book a trial lesson and collect phone numbers"],
+["питання про розклад і пробне заняття тонуть у директі","показують розклад груп і записують на пробне заняття","questions about schedules and trial classes sink in your DMs","show group schedules and sign people up for a trial class"],
+["покупці з питаннями про розмір чи наявність йдуть, не отримавши відповіді","відповідають про наявність і розмір та збирають номери для повторних продажів","shoppers asking about size or stock leave without an answer","answer stock and size questions and collect numbers for repeat sales"],
+["записи на манікюр приходять у директ, а вільні вікна в графіку лишаються порожніми","показують вільні слоти, записують і нагадують про візит","booking requests pile up in DMs while free slots stay empty","show free slots, book clients and remind them about the visit"],
+["запити на перегляд і ціни не отримують швидкої відповіді","збирають заявки на перегляд, уточнюють бюджет і передають менеджеру","viewing and price requests don’t get a fast reply","collect viewing requests, clarify the budget and pass leads to a manager"],
+["запити на індивідуальні замовлення губляться, бо потрібні розміри й ескізи","збирають розміри, фото та бюджет у заявку й передають майстру","custom-order requests get lost because they need sizes and sketches first","collect dimensions, photos and budget into one request for the craftsman"],
+["запити на розрахунок ремонту розпорошені по різних месенджерах","збирають площу, тип робіт і контакти в заявку для кошторису","renovation quote requests are scattered across several messengers","collect area, type of work and contacts into a ready request for a quote"],
+["батьки й студенти питають про курси та, не дочекавшись відповіді, обирають іншу школу","підбирають курс, записують на безкоштовний пробний урок і збирають номери","parents and students asking about courses pick another school if nobody replies","recommend a course, book a free trial lesson and collect phone numbers"]
+];
+function genScript(l){
+ const s=SCRIPTS[nicheIdx(l.niche)]||GENERIC,n=l.biz||(l.gen?"[назва закладу]":l.name);
+ return l.cc==='UA'
+ ?`Добрий день! Пишу до команди «${n}».\n\nБачу, що клієнти пишуть вам в Instagram і Telegram, але ${s[0]}. Ми робимо Telegram-ботів, які ${s[1]}.\n\nМожу безкоштовно показати демо-бота саме під «${n}» — 5 хвилин, без зобов’язань. Надіслати коротке відео?`
+ :`Hi! Reaching out to the ${n} team.\n\nI noticed clients message you on Instagram and Telegram, but ${s[2]}. We build Telegram bots that ${s[3]}.\n\nI can show you a free demo bot made for ${n} — 5 minutes, no strings attached. Want me to send a quick video?`;
+}
+const esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+async function copyTxt(t){
+ try{await navigator.clipboard.writeText(t)}catch(e){const a=document.createElement('textarea');a.value=t;document.body.append(a);a.select();document.execCommand('copy');a.remove()}
+}
+function scriptBlock(l){
+ if(!state.open.has(l.id))return `<button class="sbtn" data-open="${l.id}">Подивитись скрипт для розсилки</button>`;
+ const b=(x,n)=>l.f.includes(x)?`<button class="btn" data-go="${l.id}:${x}">Написати в ${n}</button>`:'';
+ return `<div class="script"><button class="sbtn on" data-open="${l.id}">Сховати скрипт</button><pre>${esc(genScript(l))}</pre><div class="btns"><button class="btn pri" data-cp="${l.id}">Скопіювати текст</button>${b('t','Telegram')}${b('i','Instagram')}</div></div>`;
+}
+function render(){
+ const list=filtered();
+ $("grid").innerHTML=list.length?list.map((l,k)=>{
+  const L=links(l);
+  const soc=["i","t","h","f","w"].map(x=>l.f.includes(x)?`<a href="${L[x][1]}" target="_blank" rel="noopener">${L[x][0]}</a>`:(x==="i"||x==="t")?`<a class="srch" href="${srchU(l,x)}" target="_blank" rel="noopener">Шукати в ${L[x][0]}</a>`:`<span class="off">${L[x][0]}</span>`).join("")+`<a class="srch" href="${mapU(l)}" target="_blank" rel="noopener">Відкрити в Google Maps</a>`;
+  return `<article class="card ${state.sel.has(l.id)?"sel":""}">
+   <div class="top"><div class="av" style="background:${hues[l.id%hues.length]}">${l.name[0]}</div>
+    <div><h3>${l.name}</h3><div class="loc">${COUNTRIES[l.cc]?.n||l.cc}, ${l.city}${l.address?"<br>"+l.address:""}</div></div>
+    <input type="checkbox" data-sel="${l.id}" ${state.sel.has(l.id)?"checked":""} aria-label="Обрати ${l.name}"></div>
+   <span class="cat">${l.niche}</span>
+   ${l.gen?genBlock(l):`<div class="soc">${soc}</div>`}
+   ${l.gen?"":`<div class="ct">${contacts(l)}</div>`}
+   ${scriptBlock(l)}
+   <div class="seg">${["Новий","В роботі","Відправлено"].map((t,k)=>`<button class="sg s${k}${l.status===k?" on":""}" data-ss="${l.id}:${k}">${t}</button>`).join("")}</div>
+  </article>`}).join(""):`<div class="empty">${state.loading?'<div class="spin"></div>Шукаємо ліди… '+(state.prog||''):LEADS.length?'Немає збігів із фільтром.':(state.msg||'Оберіть країну, місто та нішу, а потім натисніть «Шукати ліди» або завантажте свою базу.')}</div>`;
+ $("sTot").textContent=list.length;
+ $("sWork").textContent=LEADS.filter(l=>l.status===1).length;
+ $("sSel").textContent=state.sel.size;
+ $("hint").textContent=state.sel.size?"Дії застосуються до обраних":"Дії застосуються до всіх знайдених";
+}
+$("grid").onclick=e=>{
+ const o=e.target.closest("[data-open]");
+ if(o){const id=+o.dataset.open;state.open.has(id)?state.open.delete(id):state.open.add(id);return render()}
+ const c=e.target.closest("[data-cp]");
+ if(c){copyTxt(genScript(LEADS.find(x=>x.id===+c.dataset.cp)));return toast("Скрипт скопійовано")}
+ const g=e.target.closest("[data-go]");
+ if(g){ // Instagram/Telegram не дозволяють підставити текст через URL, тому копіюємо текст і відкриваємо чат
+  const [id,x]=g.dataset.go.split(":"),l=LEADS.find(y=>y.id===+id);
+  copyTxt(genScript(l));
+  window.open(x==="t"?links(l).t[1]:links(l).i[1].replace(/instagram\.com\/@?/,"ig.me/m/"),"_blank","noopener");
+  return toast("Текст скопійовано — вставте його в чат")}
+ const z=e.target.closest("[data-ss]");
+ if(z){const[a,b]=z.dataset.ss.split(":");LEADS.find(x=>x.id===+a).status=+b;return render()}
+ const s=e.target.closest("[data-st]");if(s)setStatus(+s.dataset.st);
+};
+$("grid").onchange=e=>{
+ const c=e.target.dataset.sel;if(!c)return;
+ e.target.checked?state.sel.add(+c):state.sel.delete(+c);render();
+};
+function setStatus(id){
+ const l=LEADS.find(x=>x.id===id);l.status=(l.status+1)%STATUSES.length;
+ // fetch(`/v1/leads/${id}`,{method:"PATCH",body:JSON.stringify({status:l.status})}); // збереження в БД
+ try{const s={};LEADS.forEach(x=>s[x.id]=x.status);localStorage.setItem("lm_status",JSON.stringify(s))}catch(e){}
+ render();
+}
+$("selAll").onclick=()=>{const l=filtered();const all=l.every(x=>state.sel.has(x.id));l.forEach(x=>all?state.sel.delete(x.id):state.sel.add(x.id));render()};
+
+/* ============ 7. ЕКСПОРТ ТА КОПІЮВАННЯ ============ */
+const target=()=>{const f=filtered();return state.sel.size?f.filter(l=>state.sel.has(l.id)):f};
+$("csv").onclick=()=>{
+ const rows=LEADS;if(!rows.length)return toast("Немає лідів для експорту");
+ const head=["Назва","Категорія","Країна","Місто","Instagram","Telegram","Threads","Facebook","Website","Телефон","Email","Статус","Адреса","Пошуковий_запит","Знайдений_заклад","Google_Maps","Instagram_пошук","Telegram_пошук","Outreach_Script"];
+ const q=v=>`"${String(v??"").replace(/"/g,'""')}"`;
+ const lines=rows.map(l=>{const L=links(l),g=x=>l.f.includes(x)?L[x][1]:"";
+  return [l.name,l.niche,COUNTRIES[l.cc]?.n,l.city,g("i"),g("t"),g("h"),g("f"),g("w"),l.phone,l.email,STATUSES[l.status],l.address||"",l.q||"",l.biz||"",gUrls(l).m,gUrls(l).i,gUrls(l).t,genScript(l)].map(q).join(";")});
+ const blob=new Blob(["\ufeff"+[head.map(q).join(";"),...lines].join("\r\n")],{type:"text/csv;charset=utf-8"}); // BOM + «;» — Excel відкриває коректно
+ const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="leads.csv";a.click();
+ toast("Експортовано: "+rows.length);
+};
+$("copy").onclick=async()=>{
+ const rows=target();if(!rows.length)return toast("Немає контактів");
+ const txt=rows.map(l=>`${l.name}\t${l.phone}\t${l.email}\t${l.gen?gUrls(l).m:""}`).join("\n");
+ try{await navigator.clipboard.writeText(txt);toast("Скопійовано: "+rows.length)}
+ catch(e){const t=document.createElement("textarea");t.value=txt;document.body.append(t);t.select();document.execCommand("copy");t.remove();toast("Скопійовано: "+rows.length)}
+};
+let tt;function toast(m){const t=$("toast");t.textContent=m;t.classList.add("show");clearTimeout(tt);tt=setTimeout(()=>t.classList.remove("show"),1800)}
+
+/* ============ 8. ПОШУК РЕАЛЬНИХ ЛІДІВ ============
+   Режим вибирається у списку «Джерело» (або в CONFIG.MODE): mock | overpass | google.
+
+   ВАРІАНТ А1 — OpenStreetMap / Overpass: безкоштовно, БЕЗ ключа. Мінус: у OSM мало телефонів/email/соцмереж.
+
+   ВАРІАНТ А2 — Google Places API (New): як отримати ключ
+   1) console.cloud.google.com → увійдіть в акаунт Google → «Select a project» → «New project».
+   2) Меню «Billing» → прив'яжіть картку (без білінгу Places не працює; Google дає безкоштовний ліміт — актуальні ціни дивіться на cloud.google.com/maps-platform/pricing).
+   3) «APIs & Services» → «Library» → знайдіть «Places API (New)» → «Enable».
+   4) «APIs & Services» → «Credentials» → «Create credentials» → «API key».
+   5) ОБОВ'ЯЗКОВО обмежте ключ: Application restrictions → «Websites (HTTP referrers)» → ваш домен; API restrictions → лише «Places API (New)».
+   6) Вставте ключ у CONFIG.GOOGLE_KEY нижче АБО залиште як є — сайт спитає ключ при першому пошуку (тоді в файлі він не зберігається).
+   Ліміти: один запит дає до 20 місць (більше — через nextPageToken). Google повертає назву, адресу, телефон, сайт; email та Instagram він НЕ дає
+   (їх добувають із сайту закладу або через Hunter.io/Apollo). Умови Google обмежують зберігання результатів — перевірте Terms of Service.
+   Для продакшну ключ краще ховати за власним бекендом (проксі), а не тримати у браузері.
+
+   ВАЖЛИВО: у режимах overpass/google браузер робить запити до зовнішніх сайтів. В опублікованому артефакті Claude вони заблоковані,
+   тому збережіть цей файл і відкрийте локально або розмістіть на власному хостингу. */
+const CONFIG={MODE:"targets",GOOGLE_KEY:"YOUR_GOOGLE_API_KEY",OVERPASS_URL:"https://overpass-api.de/api/interpreter"};
+const GENERIC=["частина звернень у соцмережах губиться без швидкої відповіді","приймають заявки, відповідають на типові питання й збирають номери клієнтів","some inquiries from social media get lost without a quick reply","answer common questions, take requests and collect client phone numbers"];
+const KW=[[/барбер|barber/,1],[/фітнес|фитнес|fitness|gym|трен/,2],[/спа\b|масаж|massage/,3],[/детейл|detail/,5],[/авто|сто\b|car repair|garage/,4],[/клінік|клиник|стомат|dent|clinic/,6],[/каф|рестор|coffee|cafe|restaurant/,7],[/дит|kid|child/,8],[/мов|language/,9],[/танц|dance/,10],[/маніюр|манікюр|nail/,12],[/шоурум|showroom/,13],[/меб|furniture/,14],[/будів|ремонт|construction|renovation/,15],[/\bit\b|coding|програм|курс/,16],[/магазин|shop|store|одяг|cosmetic/,11],[/салон|beauty|краси|hair/,0]];
+function nicheIdx(n){n=(n||"").toLowerCase();const e=NICHES.findIndex(x=>x.toLowerCase()===n);if(e>=0)return e;const k=KW.find(x=>x[0].test(n));return k?k[1]:-1}
+
+const clean=v=>String(v??"").replace(/[<>"]/g,"").trim();
+const httpU=v=>{v=clean(v);if(!v)return"";if(!/^https?:\/\//i.test(v)){if(/^[\w.-]+\.[a-z]{2,}/i.test(v))v="https://"+v;else return""}return v};
+const soc=(v,b)=>{v=clean(v);return !v?"":/^https?:\/\//i.test(v)?v:b+v.replace(/^@/,"")};
+const CC_EN={ukraine:"UA",poland:"PL",germany:"DE","united kingdom":"GB",uk:"GB",usa:"US","united states":"US",czechia:"CZ","czech republic":"CZ",spain:"ES"};
+function ccOf(v){v=clean(v);const x=v.toLowerCase();if(/^(ru|rus)$|росі|россия|russia/.test(x))return null;const k=Object.keys(COUNTRIES).find(k=>k.toLowerCase()===x||COUNTRIES[k].n.toLowerCase()===x);return k||CC_EN[x]||v}
+// Нормалізація будь-якого запису (API або файл) у єдиний формат ліда; Росія відсікається
+function mk(o){
+ const u={i:soc(o.i,"https://instagram.com/"),t:soc(o.t,"https://t.me/"),h:soc(o.h,"https://threads.net/@"),f:soc(o.f,"https://facebook.com/"),w:httpU(o.w)};
+ if(u.w){const m=[["instagram.com","i"],["facebook.com","f"],["t.me","t"],["threads.net","h"]].find(x=>u.w.includes(x[0]));if(m){if(!u[m[1]])u[m[1]]=u.w;u.w=""}}
+ if(/\.(ru|su)(\/|:|$)/i.test(u.w))return null;
+ let cc=ccOf(o.cc);if(cc===null)return null;
+ const phone=clean(o.phone);if(!cc&&/^\+?380/.test(phone.replace(/\s/g,"")))cc="UA";
+ return{id:0,name:clean(o.name),niche:clean(o.niche),cc,city:clean(o.city),address:clean(o.address),phone,email:clean(o.email),u,lat:o.lat,lon:o.lon,h:"",f:Object.keys(u).filter(k=>u[k]).join(""),status:0};
+}
+const contacts=l=>`<a href='${l.phone?"tel:"+l.phone.replace(/\s/g,""):"#"}'>${l.phone||"— телефон не знайдено"}</a><a href='${l.email?"mailto:"+l.email:"#"}'>${l.email||"— email не знайдено"}</a>`;
+
+/* OSM-запити по нішах: кожен рядок — селектори Overpass (nwr = точки, лінії, відношення) */
+const OSM_Q=[
+ ['["shop"="beauty"]','["shop"="hairdresser"]'],
+ ['["shop"="barber"]','["shop"="hairdresser"]["name"~"barber|барбер",i]','["shop"="hairdresser"]["hairdresser"~"barber",i]'],
+ ['["leisure"="fitness_centre"]','["leisure"="sports_centre"]["sport"="fitness"]'],
+ ['["shop"="massage"]','["leisure"="spa"]','["amenity"="spa"]'],
+ ['["shop"="car_repair"]'],
+ ['["shop"="car_repair"]["name"~"detail|детейл",i]','["amenity"="car_wash"]'],
+ ['["amenity"="clinic"]','["amenity"="dentist"]','["amenity"="doctors"]','["healthcare"="dentist"]'],
+ ['["amenity"="cafe"]','["amenity"="restaurant"]'],
+ ['["amenity"="childcare"]','["amenity"="kindergarten"]'],
+ ['["amenity"="language_school"]'],
+ ['["leisure"="dance"]','["amenity"="dancing_school"]'],
+ ['["shop"="clothes"]','["shop"="cosmetics"]'],
+ ['["shop"="beauty"]["beauty"="nails"]','["shop"="beauty"]["name"~"nail|манікюр|ногт",i]'],
+ ['["shop"="car"]','["shop"="furniture"]'],
+ ['["craft"="carpenter"]','["shop"="furniture"]'],
+ ['["craft"="builder"]','["office"="construction_company"]'],
+ ['["amenity"="training"]','["amenity"="school"]["name"~"IT|програм|coding|комп",i]']
+];
+const OSM_EP=["https://overpass-api.de/api/interpreter","https://overpass.kumi.systems/api/interpreter","https://overpass.private.coffee/api/interpreter"];
+const enc=encodeURIComponent;
+// Резервні посилання для скаута (коли в OSM немає соцмереж): пошук Instagram/Telegram за назвою та Google Maps
+const srchU=(l,x)=>"https://www.google.com/search?q="+enc("site:"+(x==="i"?"instagram.com":"t.me")+" "+l.name+" "+l.city);
+const mapU=l=>"https://www.google.com/maps/search/?api=1&query="+enc((l.name+" "+(l.address||"")+" "+l.city).replace(/\s+/g," "));
+async function osmCall(q){ // пробує кілька дзеркал Overpass, якщо одне перевантажене
+ let err;
+ for(const ep of [CONFIG.OVERPASS_URL,...OSM_EP.filter(x=>x!==CONFIG.OVERPASS_URL)]){
+  try{const r=await fetch(ep,{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded"},body:"data="+enc(q)});
+   if(!r.ok)throw new Error("Overpass HTTP "+r.status);
+   return (await r.json()).elements||[];}catch(e){err=e}
+ }
+ throw err;
+}
+async function cityArea(cc,city){ // Nominatim знаходить межі міста в потрібній країні
+ try{
+  const r=await fetch("https://nominatim.openstreetmap.org/search?format=json&limit=8&accept-language=uk&q="+enc(city)+(/^[A-Z]{2}$/.test(cc)?"&countrycodes="+cc.toLowerCase():""));
+  const j=await r.json(),ok=["city","town","municipality","administrative","village","county","suburb"];
+  const x=j.find(p=>p.osm_type==="relation"&&ok.includes(p.type))||j.find(p=>p.osm_type==="relation");
+  if(x)return `area(${3600000000+Number(x.osm_id)})->.a;`;
+ }catch(e){}
+ const c=city.replace(/[^\p{L}\p{N} -]/gu,"");
+ return `area[~"^name(:uk|:en)?$"~"^${c}$",i]["boundary"="administrative"]->.a;`;
+}
+async function viaOsm(cc,city,niches){
+ const area=await cityArea(cc,city),out=[],seen=new Set();
+ for(let k=0;k<niches.length;k++){
+  state.prog="("+(k+1)+"/"+niches.length+": "+niches[k]+")";render();
+  const sel=OSM_Q[NICHES.indexOf(niches[k])];
+  const q=`[out:json][timeout:90];${area}(${sel.map(s=>`nwr${s}["name"](area.a);`).join("")});out center tags;`;
+  for(const e of await osmCall(q)){
+   const id=e.type+e.id;if(seen.has(id))continue;seen.add(id);const t=e.tags||{};
+   out.push(mk({name:t.name,niche:niches[k],cc,city,address:[t["addr:street"],t["addr:housenumber"]].filter(Boolean).join(" "),phone:t.phone||t["contact:phone"]||t["contact:mobile"],email:t.email||t["contact:email"],w:t.website||t["contact:website"]||t.url,i:t["contact:instagram"]||t.instagram,t:t["contact:telegram"],f:t["contact:facebook"]||t.facebook,h:t["contact:threads"],lat:e.lat??e.center?.lat,lon:e.lon??e.center?.lon}));
+  }
+ }
+ return out; // показуємо ВСІ заклади з назвою, навіть без жодного контакту
+}
+async function viaGoogle(cc,city,niches){
+ if(!CONFIG.GOOGLE_KEY||CONFIG.GOOGLE_KEY.startsWith("YOUR_"))CONFIG.GOOGLE_KEY=(prompt("Вставте Google API key (Places API New):")||"").trim();
+ if(!CONFIG.GOOGLE_KEY)throw new Error("Немає API-ключа");
+ const out=[];
+ for(const n of niches.slice(0,4)){
+  const r=await fetch("https://places.googleapis.com/v1/places:searchText",{method:"POST",headers:{"Content-Type":"application/json","X-Goog-Api-Key":CONFIG.GOOGLE_KEY,"X-Goog-FieldMask":"places.displayName,places.formattedAddress,places.nationalPhoneNumber,places.websiteUri"},body:JSON.stringify({textQuery:`${n} ${city} ${COUNTRIES[cc].n}`,pageSize:20,languageCode:"uk"})});
+  if(!r.ok)throw new Error("Google HTTP "+r.status+" "+(await r.text()).slice(0,140));
+  ((await r.json()).places||[]).forEach(p=>out.push(mk({name:p.displayName?.text,niche:n,cc,city,address:p.formattedAddress,phone:p.nationalPhoneNumber,w:p.websiteUri})));
+ }
+ return out;
+}
+// Головна функція пошуку: country — код (UA, PL…), city — рядок, niches — масив назв ніш
+async function fetchRealLeads(country,city,niches){
+ niches=[].concat(niches);let r;
+ if(CONFIG.MODE==="targets"){await new Promise(s=>setTimeout(s,500));r=genTargets(country,city,niches)}
+ else if(CONFIG.MODE==="google")r=await viaGoogle(country,city,niches);
+ else if(CONFIG.MODE==="overpass")r=await viaOsm(country,city,niches);
+ else{await new Promise(s=>setTimeout(s,1200));r=DEMO.filter(l=>l.cc===country&&niches.includes(l.niche)).map(l=>({...l}))} // імітація завантаження
+ const sc=l=>(l.phone?1:0)+(l.email?1:0)+(l.f||"").length;
+ return r.filter(l=>l&&l.name).sort((a,b)=>sc(b)-sc(a)).map((l,i)=>({...l,id:i+1}));
+}
+/* ============ РЕЖИМ «ГЕНЕРАТОР ЗАПИТІВ» (без мережі, без API, без помилок fetch) ============
+   Для обраних країни/міста/ніші створює 15–20 карток-запитів (район + тип запиту) з готовими посиланнями
+   на Google Maps, Instagram (хештег), Telegram (пошук t.me через Google) і пошук сайтів/контактів. */
+const NICHE_KW=[["салон краси","beauty salon"],["барбершоп","barbershop"],["фітнес клуб","fitness club"],["масаж спа","massage spa"],["автосервіс СТО","car repair"],["детейлінг","car detailing"],["приватна клініка стоматологія","private clinic dentist"],["кав’ярня ресторан","cafe restaurant"],["дитячий розвиваючий центр","kids development center"],["мовна школа курси","language school"],["танцювальна студія","dance studio"],["магазин одягу косметики","clothing cosmetics store"],["студія манікюру","nail studio"],["шоурум","showroom"],["меблева майстерня","furniture workshop"],["ремонт квартир бригада","renovation contractors"],["IT школа курси програмування","IT school coding courses"]];
+const MODS=[["найкращі","best"],["відгуки","reviews"],["ціни","prices"],["запис онлайн","book online"],["недорого","affordable"],["преміум","premium"],["нові відкриття","new opening"],["акції","deals"],["працює допізна","open late"]];
+const DISTR={};const D=(ks,a)=>ks.forEach(k=>DISTR[k]=a);
+D(["київ","kyiv","kiev"],["Поділ","Печерськ","Оболонь","Троєщина","Лівобережна","Позняки","Голосіїв","Виноградар"]);
+D(["харків","kharkiv"],["Салтівка","Центр","Олексіївка","Холодна гора","Нові Будинки","Павлове Поле"]);
+D(["львів","lviv"],["Сихів","Франківський район","Галицький район","Шевченківський район","Личаківський район","Збоїща","Левандівка","Рясне"]);
+D(["дніпро","dnipro"],["Центр","Нагірний","Топольна","Парус","Соборний","Чечелівський"]);
+D(["одеса","odesa","odessa"],["Аркадія","Центр","Таїрова","Черемушки","Молдаванка","Пересип"]);
+D(["варшава","warsaw"],["Śródmieście","Mokotów","Praga","Wola","Ursynów","Żoliborz"]);
+D(["краків","krakow","kraków"],["Stare Miasto","Kazimierz","Podgórze","Nowa Huta"]);
+D(["берлін","berlin"],["Mitte","Kreuzberg","Prenzlauer Berg","Charlottenburg","Neukölln","Friedrichshain"]);
+D(["мюнхен","munich"],["Schwabing","Maxvorstadt","Sendling","Haidhausen"]);
+D(["лондон","london"],["Soho","Camden","Shoreditch","Brixton","Canary Wharf","Kensington"]);
+D(["нью-йорк","new york"],["Manhattan","Brooklyn","Queens","Bronx","Harlem","Williamsburg"]);
+D(["лос-анджелес","los angeles"],["Hollywood","Santa Monica","Downtown","Venice"]);
+D(["маямі","miami"],["Brickell","Wynwood","South Beach","Coral Gables"]);
+D(["прага","prague"],["Praha 1","Praha 2","Vinohrady","Žižkov","Smíchov"]);
+D(["мадрид","madrid"],["Salamanca","Chamberí","Malasaña","Retiro","Chueca"]);
+D(["барселона","barcelona"],["Eixample","Gràcia","Raval","Sants","Poblenou"]);
+function genTargets(cc,city,niches){
+ const uk=cc==="UA",per=Math.min(20,Math.max(6,Math.floor(20/niches.length))),out=[];
+ const d=DISTR[city.toLowerCase()]||(uk?["центр","північ","південь","схід","захід"]:["center","north","south","east","west"]);
+ niches.forEach(n=>{
+  const base=NICHE_KW[NICHES.indexOf(n)][uk?0:1]+" "+city;
+  const vars=[["",0],...d.slice(0,8).map(x=>[x,1]),...MODS.map(m=>[uk?m[0]:m[1],0])].slice(0,per);
+  vars.forEach(([v,isD])=>{
+   const q=(base+" "+v).trim();
+   out.push({id:0,name:q.charAt(0).toUpperCase()+q.slice(1),niche:n,cc,city,q,tag:isD?q:base,gen:true,address:"",phone:"",email:"",u:{},h:"",f:"",status:0});
+  });
+ });
+ return out;
+}
+const gUrls=l=>{const q=l.q||(l.name+" "+l.city).trim(),tag=(l.tag||q).toLowerCase().replace(/[^\p{L}\p{N}]/gu,"");
+ return{m:"https://www.google.com/maps/search/"+enc(q).replace(/%20/g,"+"),i:"https://www.instagram.com/explore/tags/"+enc(tag)+"/",t:"https://www.google.com/search?q="+enc("site:t.me "+q),w:"https://www.google.com/search?q="+enc(q+" контакти телефон сайт")}};
+const genBlock=l=>{const u=gUrls(l),a=(h,t)=>`<a class="srch" href="${h}" target="_blank" rel="noopener">${t}</a>`;
+ return `<div class="soc">${a(u.m,"Пошук у Google Maps")}${a(u.i,"Пошук у Instagram")}${a(u.t,"Пошук у Telegram")}${a(u.w,"Сайт і контакти")}</div><input class="nm" data-nm="${l.id}" value="${l.biz||""}" placeholder="Назва знайденого закладу (підставиться у скрипт)" aria-label="Назва знайденого закладу">`};
+$("grid").oninput=e=>{const id=e.target.dataset.nm;if(!id)return;const l=LEADS.find(x=>x.id===+id);l.biz=e.target.value.replace(/[<>"']/g,"");const pre=e.target.closest(".card").querySelector("pre");if(pre)pre.textContent=genScript(l)};
+$("modeSel").onchange=e=>{CONFIG.MODE=e.target.value};
+$("go").onclick=async()=>{
+ const niches=[...state.niches];
+ if(!state.cc||!state.city||!niches.length)return toast("Оберіть країну, місто та хоча б одну нішу");
+ LEADS=[];state.sel.clear();state.open.clear();state.loading=true;state.msg="";render();
+ try{LEADS=await fetchRealLeads(state.cc,state.city,niches);state.msg=LEADS.length?"":"Нічого не знайдено. Спробуйте інше місто, нішу або джерело."}
+ catch(e){state.msg="Помилка: "+e.message+(e instanceof TypeError?". Браузер заблокував запит: на опублікованій сторінці зовнішні запити заборонені. Збережіть файл і відкрийте локально або на своєму хостингу.":"")}
+ state.loading=false;state.prog="";render();
+};
+
+/* ============ 9. ЗАВАНТАЖЕННЯ ВЛАСНОЇ БАЗИ (CSV / JSON) ============
+   Колонки (будь-яка мова з переліку): name/назва, niche/категорія, country/країна, city/місто, phone/телефон, email,
+   instagram, telegram, threads, facebook, website/сайт. Підходить і файл, експортований із цього сайту. */
+function parseCSV(t){t=t.replace(/^\ufeff/,"");const f=t.split("\n")[0],d=(f.match(/;/g)||[]).length>(f.match(/,/g)||[]).length?";":",";
+ const rows=[];let r=[],c="",q=false;
+ for(let i=0;i<t.length;i++){const ch=t[i];
+  if(q){if(ch=='"'){if(t[i+1]=='"'){c+='"';i++}else q=false}else c+=ch}
+  else if(ch=='"')q=true;else if(ch===d){r.push(c);c=""}
+  else if(ch==="\n"||ch==="\r"){if(ch==="\r"&&t[i+1]==="\n")i++;r.push(c);c="";if(r.some(x=>x.trim()))rows.push(r);r=[]}else c+=ch}
+ r.push(c);if(r.some(x=>x.trim()))rows.push(r);
+ const h=(rows.shift()||[]).map(x=>x.trim().toLowerCase());
+ return rows.map(a=>Object.fromEntries(h.map((k,i)=>[k,a[i]])));}
+$("up").onclick=()=>$("file").click();
+$("file").onchange=async e=>{
+ const f=e.target.files[0];if(!f)return;
+ try{
+  const t=await f.text(),p=/\.json$/i.test(f.name)?JSON.parse(t):parseCSV(t);
+  const A=(o,ks)=>{for(const k of Object.keys(o))if(ks.includes(k.trim().toLowerCase()))return o[k];return""};
+  LEADS=(Array.isArray(p)?p:p.leads||[]).map(o=>mk({name:A(o,["name","назва","назва закладу","company","title","название"]),niche:A(o,["niche","category","категорія","ніша","type","категория"]),cc:A(o,["country","країна","страна","cc"]),city:A(o,["city","місто","город"]),address:A(o,["address","адреса","адрес"]),phone:A(o,["phone","телефон","tel"]),email:A(o,["email","e-mail","пошта","почта"]),i:A(o,["instagram","insta","ig"]),t:A(o,["telegram","tg"]),h:A(o,["threads"]),f:A(o,["facebook","fb"]),w:A(o,["website","web","site","url","сайт"])})).filter(l=>l&&l.name).map((l,i)=>({...l,id:i+1}));
+  state.sel.clear();state.open.clear();state.msg=LEADS.length?"":"У файлі не знайдено лідів. Потрібна хоча б колонка name/назва.";
+  toast("Завантажено: "+LEADS.length);
+ }catch(err){LEADS=[];state.msg="Не вдалося прочитати файл: "+err.message}
+ e.target.value="";render();
+};
+
+fillCountries();fillCities();render();
+</script>
+</body>
+</html>
